@@ -9,7 +9,7 @@
 
   <properties>
     <!-- Needed for allure-maven-plugin to specify report version -->
-    <allure.version>1.4.11</allure.version>
+    <allure.version>1.4.24.RC2</allure.version>
     <aspectj.version>1.8.9</aspectj.version>
   </properties>
 
@@ -26,20 +26,31 @@
 
   <dependencies>
     <dependency>
-      <groupId>ru.yandex.qatools.allure</groupId>
-      <artifactId>allure-cucumber-jvm-adaptor</artifactId>
-      <version>1.5.1</version>
+      <groupId>info.cukes</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>1.2.4</version>
+      <scope>test</scope>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>ru.yandex.qatools.allure</groupId>-->
+      <!--<artifactId>allure-cucumber-jvm-adaptor</artifactId>-->
+      <!--<version>1.5.1</version>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>com.github.frameworkium</groupId>
       <artifactId>frameworkium-core</artifactId>
       <version>2.0.9</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.testng</groupId>
-          <artifactId>testng</artifactId>
-        </exclusion>
-      </exclusions>
+      <!--<exclusions>-->
+        <!--<exclusion>-->
+          <!--<groupId>org.testng</groupId>-->
+          <!--<artifactId>testng</artifactId>-->
+        <!--</exclusion>-->
+      <!--</exclusions>-->
+    </dependency>
+    <dependency>
+      <groupId>info.cukes</groupId>
+      <artifactId>cucumber-testng</artifactId>
+      <version>1.2.4</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -163,12 +174,12 @@
               <argLine>
                 -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
               </argLine>
-              <properties>
-                <property>
-                  <name>listener</name>
-                  <value>net.moodel.demo.utils.CustomAllureRunListener</value>
-                </property>
-              </properties>
+              <!--<properties>-->
+                <!--<property>-->
+                  <!--<name>listener</name>-->
+                  <!--<value>net.moodel.demo.utils.CustomAllureRunListener</value>-->
+                <!--</property>-->
+              <!--</properties>-->
             </configuration>
             <dependencies>
               <dependency>

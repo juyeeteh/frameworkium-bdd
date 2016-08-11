@@ -1,7 +1,7 @@
 @pass
 Feature: Basic login and navigation tests to demonstrate use of multiple page object and step definition classes
 
-  @login
+  @login @single
   Scenario: successfully login with correct login details
     Given I am on the login page
     When I submit login with correct details
