@@ -1,11 +1,12 @@
 package net.moodel.demo.steps;
 
-import net.moodel.demo.pages.HomePage;
-import net.moodel.demo.pages.LoginPage;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import net.moodel.demo.pages.HomePage;
+import net.moodel.demo.pages.LoginPage;
 import org.apache.commons.lang3.RandomStringUtils;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,6 +28,8 @@ public class LoginSteps {
         homePage = new HomePage().get();
     }
 
+
+    @Step
     @Given("^I have successfully logged in$")
     public void i_have_successfully_logged_in() throws Throwable {
         i_am_on_the_login_page();
@@ -34,11 +37,13 @@ public class LoginSteps {
         i_will_be_logged_in();
     }
 
+    @Step
     @Given("^I am on the login page$")
     public void i_am_on_the_login_page() throws Throwable {
         loginPage.navigateToPage();
     }
 
+    @Step
     @When("^I submit login with incorrect details")
     public void i_enter_incorrect_login_details() throws Throwable {
         loginPage.enterIntoUsernameField(RandomStringUtils.randomAlphabetic(5));
@@ -46,6 +51,7 @@ public class LoginSteps {
         loginPage.clickLoginButton();
     }
 
+    @Step
     @When("^I submit login with correct details$")
     public void i_submit_login_with_correct_details() throws Throwable {
         loginPage.enterIntoUsernameField(CORRECT_USERNAME);
@@ -53,11 +59,13 @@ public class LoginSteps {
         loginPage.clickLoginButton();
     }
 
+    @Step
     @Then("^I will be logged in$")
     public void i_will_be_logged_in() throws Throwable {
         assertTrue("Not logged In", homePage.isUserLoggedIn());
     }
 
+    @Step
     @Then("^I will not be logged in$")
     public void i_will_not_be_not_be_logged_in() throws Throwable {
         assertFalse("user is logged in", homePage.isUserLoggedIn());
