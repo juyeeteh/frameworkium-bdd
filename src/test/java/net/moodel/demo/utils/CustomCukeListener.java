@@ -1,6 +1,8 @@
 package net.moodel.demo.utils;
 
+import cucumber.api.java.Before;
 import gherkin.formatter.Formatter;
+import gherkin.formatter.Reporter;
 import gherkin.formatter.model.*;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.Features;
@@ -15,14 +17,7 @@ import java.util.List;
 
 import ru.yandex.qatools.allure.annotations.Stories;
 
-/**
- * This class overrides the ru.yandex.qatools.allure.cucumberjvm.AllureRunListener
- * class as screenshots on test failures were not being attached to the allure
- * reports
- */
-
-
-public class CustomCukeListener implements Formatter {
+public class CustomCukeListener implements Formatter, Reporter {
 
     private Allure lifecycle = Allure.LIFECYCLE;
 
@@ -79,7 +74,7 @@ public class CustomCukeListener implements Formatter {
 
     @Override
     public void step(Step step) {
-
+        System.out.println("STEP! - " + step.getKeyword() + " " + step.getName() + " " + step.hashCode() );
     }
 
     @Override
@@ -153,5 +148,44 @@ public class CustomCukeListener implements Formatter {
                 return Features.class;
             }
         };
+    }
+
+
+
+    @Override
+    public void before(Match match, Result result) {
+
+
+
+    }
+
+    @Override
+    public void result(Result result) {
+        System.out.println(result.hashCode());
+
+    }
+
+    @Override
+    public void after(Match match, Result result) {
+
+        if(result.getStatus() != "passed"){
+            StepFailureEvent stepFailureEvent = new StepFailureEvent().withThrowable(result.getError());
+            getLifecycle().fire(stepFailureEvent);
+        }
+    }
+
+    @Override
+    public void match(Match match) {
+    }
+
+    @Override
+    public void embedding(String s, byte[] bytes) {
+        System.out.println("Reporter - EMBEDDING!");
+
+    }
+
+    @Override
+    public void write(String s) {
+        System.out.println("Reporter - WRITE!");
     }
 }

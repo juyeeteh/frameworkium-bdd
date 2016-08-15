@@ -11,6 +11,7 @@ import ru.yandex.qatools.allure.annotations.Step;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 /**
  * Step Definition class for general steps and functionality

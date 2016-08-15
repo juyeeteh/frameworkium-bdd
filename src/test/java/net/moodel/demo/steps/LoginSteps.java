@@ -8,8 +8,7 @@ import net.moodel.demo.pages.LoginPage;
 import org.apache.commons.lang3.RandomStringUtils;
 import ru.yandex.qatools.allure.annotations.Step;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 
 /**
@@ -62,14 +61,13 @@ public class LoginSteps {
     @Step
     @Then("^I will be logged in$")
     public void i_will_be_logged_in() throws Throwable {
-        assertTrue("Not logged In", homePage.isUserLoggedIn());
+        assertThat(homePage.isUserLoggedIn()).isTrue();
     }
 
     @Step
     @Then("^I will not be logged in$")
     public void i_will_not_be_not_be_logged_in() throws Throwable {
-        assertFalse("user is logged in", homePage.isUserLoggedIn());
-
+        assertThat(homePage.isUserLoggedIn()).isFalse();
     }
 
 

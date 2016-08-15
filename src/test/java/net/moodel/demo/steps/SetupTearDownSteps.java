@@ -5,6 +5,7 @@ import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import net.moodel.demo.utils.PropertyUtils;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 
 /**
@@ -12,26 +13,17 @@ import org.testng.annotations.BeforeSuite;
  */
 public class SetupTearDownSteps extends BaseTest {
 
-    @BeforeSuite
-    public void beforeSuite(){
-        System.out.println("in before suite ");
-    }
-
-
     @Before
     public void setup() {
-        PropertyUtils.loadProperties();
-
         // This needs to be run once at the very start of any scenario
+        PropertyUtils.loadProperties();
         instantiateDriverObject();
         configureBrowserBeforeUse();
     }
 
     @After
     public void tearDown(Scenario scenario) {
-
         BaseTest.getDriver().quit();
-
     }
 
 }
