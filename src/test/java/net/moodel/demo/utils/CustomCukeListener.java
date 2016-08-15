@@ -1,21 +1,14 @@
 package net.moodel.demo.utils;
 
-import cucumber.api.java.Before;
+import cucumber.runtime.StepDefinitionMatch;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.Reporter;
 import gherkin.formatter.model.*;
 import ru.yandex.qatools.allure.Allure;
-import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.config.AllureModelUtils;
 import ru.yandex.qatools.allure.events.*;
-import ru.yandex.qatools.allure.model.Label;
-import ru.yandex.qatools.allure.utils.AnnotationManager;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import ru.yandex.qatools.allure.annotations.Stories;
 
 public class CustomCukeListener implements Formatter, Reporter {
 
@@ -39,14 +32,15 @@ public class CustomCukeListener implements Formatter, Reporter {
 
     @Override
     public void feature(Feature feature) {
+
         featureInUse = feature.getName();
-        TestSuiteStartedEvent suiteStartedEvent = new TestSuiteStartedEvent(feature.getName(), feature.getName());
-        getLifecycle().fire(suiteStartedEvent);
+//        TestSuiteStartedEvent suiteStartedEvent = new TestSuiteStartedEvent(feature.getName(), feature.getName());
+//        getLifecycle().fire(suiteStartedEvent);
     }
 
     @Override
     public void scenarioOutline(ScenarioOutline scenarioOutline) {
-
+        System.out.println(scenarioOutline.toString());
     }
 
     @Override
@@ -56,9 +50,12 @@ public class CustomCukeListener implements Formatter, Reporter {
 
     @Override
     public void startOfScenarioLifeCycle(Scenario scenario) {
-        TestCaseStartedEvent scenStarterEvent = new TestCaseStartedEvent(featureInUse, scenario.getName());
-        AnnotationManager am = buildAnnotationManager(featureInUse, scenario.getName());
-        am.update(scenStarterEvent);
+        TestCaseStartedEvent scenStarterEvent = new TestCaseStartedEvent(featureInUse, scenario.getName())
+                .withLabels(
+                        AllureModelUtils.createFeatureLabel(featureInUse),
+                        AllureModelUtils.createStoryLabel(scenario.getName())
+//                        AllureModelUtils.createTestLabel(scenario.getName())
+                );
         getLifecycle().fire(scenStarterEvent);
     }
 
@@ -66,6 +63,7 @@ public class CustomCukeListener implements Formatter, Reporter {
     public void background(Background background) {
 
     }
+
 
     @Override
     public void scenario(Scenario scenario) {
@@ -85,8 +83,8 @@ public class CustomCukeListener implements Formatter, Reporter {
 
     @Override
     public void done() {
-        TestSuiteFinishedEvent testSuiteFinishedEvent = new TestSuiteFinishedEvent(featureInUse);
-        getLifecycle().fire(testSuiteFinishedEvent);
+//        TestSuiteFinishedEvent testSuiteFinishedEvent = new TestSuiteFinishedEvent(featureInUse);
+//        getLifecycle().fire(testSuiteFinishedEvent);
     }
 
     @Override
@@ -100,82 +98,49 @@ public class CustomCukeListener implements Formatter, Reporter {
     }
 
 
-    public AnnotationManager buildAnnotationManager(String feature, String story) {
-        //Add feature and story annotations
-        Collection<Annotation> annotations = new ArrayList<>();
-        annotations.add(getStoriesAnnotation(new String[] { story }));
-        annotations.add(getFeaturesAnnotation(new String[] { feature }));
-        return new AnnotationManager(annotations);
-    }
-
-    /**
-     * Creates Story annotation object
-     *
-     * @param value story names array
-     * @return Story annotation object
-     */
-    Stories getStoriesAnnotation(final String[] value) {
-        return new Stories() {
-
-            @Override
-            public String[] value() {
-                return value;
-            }
-
-            @Override
-            public Class<Stories> annotationType() {
-                return Stories.class;
-            }
-        };
-    }
-
-    /**
-     * Creates Feature annotation object
-     *
-     * @param value feature names array
-     * @return Feature annotation object
-     */
-    Features getFeaturesAnnotation(final String[] value) {
-        return new Features() {
-
-            @Override
-            public String[] value() {
-                return value;
-            }
-
-            @Override
-            public Class<Features> annotationType() {
-                return Features.class;
-            }
-        };
-    }
-
-
 
     @Override
     public void before(Match match, Result result) {
-
-
-
+        System.out.println("STEP_before");
+        StepEvent stepEvent = new StepStartedEvent("START!");
+        getLifecycle().fire(stepEvent);
     }
 
     @Override
     public void result(Result result) {
-        System.out.println(result.hashCode());
+        System.out.println("STEP_after");
+        if(result.getStatus() != "passed"){
+            StepFailureEvent stepFailureEvent = new StepFailureEvent().withThrowable(result.getError());
+            getLifecycle().fire(stepFailureEvent);
+        } else {
+            StepFinishedEvent stepFinishedEvent = new StepFinishedEvent();
+            getLifecycle().fire(stepFinishedEvent);
+        }
+        System.out.println("STEPSTOP: " + System.currentTimeMillis());
+
 
     }
 
     @Override
     public void after(Match match, Result result) {
 
-        if(result.getStatus() != "passed"){
-            StepFailureEvent stepFailureEvent = new StepFailureEvent().withThrowable(result.getError());
-            getLifecycle().fire(stepFailureEvent);
-        }
     }
 
     @Override
     public void match(Match match) {
+
+        StepDefinitionMatch step = (StepDefinitionMatch)match;
+//        StepStartedEvent stepStartedEvent = new StepStartedEvent(step.getStepName());
+//        ru.yandex.qatools.allure.model.Step step1 = new ru.yandex.qatools.allure.model.Step()
+//                .withName(step.getStepName())
+//                .withStart(System.currentTimeMillis());
+        StepEvent stepEvent = new StepStartedEvent(step.getStepName());
+        getLifecycle().fire(stepEvent);
+        System.out.println("STEPSTART: " + System.currentTimeMillis() + " " + step.getStepName());
+
+//
+//        StepFinishedEvent stepFinishedEvent = new StepFinishedEvent();
+//        getLifecycle().fire(stepFinishedEvent);
     }
 
     @Override
@@ -188,4 +153,23 @@ public class CustomCukeListener implements Formatter, Reporter {
     public void write(String s) {
         System.out.println("Reporter - WRITE!");
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
